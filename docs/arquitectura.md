@@ -134,6 +134,23 @@ export function runAdvice(ctx: FinancialContext, rules: AdviceRule[], history: A
 }
 ```
 
+#### 4.1.1 Precisiones de cálculo (fase 1)
+Decisiones tomadas al implementar `src/domain`, donde el diseño funcional no era explícito:
+
+| Tema | Regla implementada |
+|---|---|
+| Unidades | COP en pesos, USD en centavos, TRM en centavos de peso por USD, tasas en puntos básicos |
+| Reparto automático (M4) | El % de cada miembro se redondea al entero (8,79M / 14,39M → 61%) y el último miembro recibe el resto. Así sale el caso dorado 4.367.600 / 2.792.400 |
+| Gasto total del hogar | Compartidos + personales de todos. Las líneas de ahorro (vacaciones, inversiones) se registran como **metas**, no como obligaciones, así que no entran al gasto |
+| Provisiones | Cuentan como gasto personal del miembro principal (provisiones / 12) |
+| Liquidez disponible | Cuentas `inmediata` con "cuenta como liquidez" − tarjetas del principal − obligaciones pendientes del mes. Como aún no se registra qué obligaciones están pagadas, las pendientes llegan como dato desde `application` (0 por defecto) |
+| Gasto inferido | Solo compara cuentas y deudas presentes en los dos snapshots: una cuenta recién registrada no es ahorro. Los ingresos del periodo y el presupuesto llegan desde `application` |
+| Fondo de emergencia (meta) | Se marca con `isEmergencyFund`; su objetivo sale de los ajustes y su avance es la liquidez disponible. **Falta la columna en el esquema** (fase 2) |
+| C05 | Meses transcurridos = 12 − meses completos hasta la fecha de pago |
+| C06 | "Sin rendimiento" = cuenta `inmediata` no marcada como inversión |
+| M8 · provisión cercana | Solo considera provisiones con fecha en la ventana y apartado < monto anual. "Obligación grande" no está definida y no se evalúa |
+| M8 · retraso de meta | Si la meta prioritaria no tiene aporte mensual, no hay retraso (pregunta abierta del diseño funcional) |
+
 ### 4.2 `application/` — casos de uso
 Cada caso de uso es una función `async` que coordina repositorios, dominio y servicios:
 
