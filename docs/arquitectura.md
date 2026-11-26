@@ -184,19 +184,19 @@ erDiagram
 | Tabla | Campos principales |
 |---|---|
 | `member` | id, name, income_profile (`empleado`/`contratista`/`independiente`), is_primary |
-| `income` | id, member_id, amount, currency, kind (`fijo`/`variable`), frequency |
-| `account` | id, name, institution, currency, liquidity (`inmediata`/`con_fecha`/`volatil`), owner_member_id \| null (compartida), is_investment, maturity_date?, counts_as_liquidity (bool), archived |
-| `snapshot` | id, date, trm, created_at, edited_at?, note? |
+| `income` | id, member_id, concept?, amount, currency, kind (`fijo`/`variable`), frequency |
+| `account` | id, name, institution, currency, liquidity (`inmediata`/`con_fecha`/`volatil`), owner_member_id \| null (compartida), is_investment, maturity_date?, counts_as_liquidity (bool), sort_order, archived |
+| `snapshot` | id, date, trm_cents (TRM en centavos de peso), created_at, edited_at?, note? |
 | `account_balance` | snapshot_id, account_id, balance, contribution? (aporte del periodo) |
-| `debt` | id, name, kind (`tarjeta_credito`/`hipoteca`/`credito_consumo`/`informal`), direction (`debo`/`me_deben`), rate_value?, rate_unit (`EM`/`EA`)?, installment?, archived |
+| `debt` | id, name, kind (`tarjeta_credito`/`hipoteca`/`credito_consumo`/`informal`), direction (`debo`/`me_deben`), currency, rate_bps? (tasa en puntos básicos: 2,10% → 210), rate_unit (`EM`/`EA`)?, installment?, term_months?, owner_member_id?, archived |
 | `debt_balance` | snapshot_id, debt_id, balance |
-| `obligation` | id, concept, amount, frequency, payer_member_id, payment_method?, shared (bool) |
-| `prorated_expense` | id, concept, cost, duration_months, owner_member_id |
-| `provision` | id, concept, annual_amount, due_date, saved_amount |
-| `goal` | id, name, kind (`acumular`/`aporte_recurrente`), target_amount?, target_date?, monthly_contribution?, priority, manual_progress? |
+| `obligation` | id, concept, amount, currency, frequency, payer_member_id, payment_method?, shared (bool), archived |
+| `prorated_expense` | id, concept, cost, duration_months, owner_member_id, start_date?, archived |
+| `provision` | id, concept, annual_amount, due_date, saved_amount, archived |
+| `goal` | id, name, kind (`acumular`/`aporte_recurrente`), target_amount?, target_date?, monthly_contribution?, priority, manual_progress?, archived |
 | `goal_account` | goal_id, account_id |
-| `advice` | id, rule_id, snapshot_id?, severity, data_json, message, status (`nuevo`/`visto`/`descartado`/`resuelto`), created_at, dismissed_at? |
-| `purchase_query` | id, description, price, currency, payment_method, installments?, kind (`necesidad`/`gusto`), result_json, created_at |
+| `advice` | id, rule_id, snapshot_id?, severity, impact_cop, data_json, message, status (`nuevo`/`visto`/`descartado`/`resuelto`), created_at, dismissed_at? |
+| `purchase_query` | id, description?, price, currency, payment_method (`contado` o id de la deuda), installments?, kind (`necesidad`/`gusto`), result_json, created_at |
 | `setting` | key, value_json (parámetros de la sección 5.0) |
 
 ---
@@ -272,19 +272,19 @@ Body: {
 
 ```
 app-financiera/
-├─ app/                         # Expo Router (rutas = pantallas)
-│  ├─ (tabs)/
-│  │  ├─ index.tsx              # Inicio
-│  │  ├─ metas.tsx
-│  │  ├─ hogar.tsx
-│  │  └─ ajustes.tsx
-│  ├─ cierre/
-│  │  ├─ index.tsx              # Cierre de mes (paso 1)
-│  │  └─ resumen.tsx            # Resumen del cierre (paso 2)
-│  ├─ lo-compro.tsx
-│  ├─ onboarding/               # M1 asistente
-│  └─ _layout.tsx
 ├─ src/
+│  ├─ app/                      # Expo Router (rutas = pantallas; convención de Expo SDK 58)
+│  │  ├─ (tabs)/
+│  │  │  ├─ index.tsx           # Inicio
+│  │  │  ├─ metas.tsx
+│  │  │  ├─ hogar.tsx
+│  │  │  └─ ajustes.tsx
+│  │  ├─ cierre/
+│  │  │  ├─ index.tsx           # Cierre de mes (paso 1)
+│  │  │  └─ resumen.tsx         # Resumen del cierre (paso 2)
+│  │  ├─ lo-compro.tsx
+│  │  ├─ onboarding/            # M1 asistente
+│  │  └─ _layout.tsx
 │  ├─ domain/
 │  │  ├─ money.ts               # Money, conversión TRM, formato
 │  │  ├─ rates.ts               # EM ↔ EA, cuota, intereses
@@ -315,7 +315,7 @@ app-financiera/
 ├─ docs/
 │  ├─ diseno-funcional.md
 │  └─ arquitectura.md
-├─ app.json · eas.json · drizzle.config.ts · tsconfig.json
+├─ app.json · eas.json · drizzle.config.ts · babel.config.js · metro.config.js · tsconfig.json
 └─ .github/workflows/ci.yml
 ```
 

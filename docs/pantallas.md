@@ -120,7 +120,7 @@ flowchart LR
 
 ## 4. Pantallas
 
-### 4.1 Inicio — `app/(tabs)/index.tsx`
+### 4.1 Inicio — `src/app/(tabs)/index.tsx`
 **Propósito:** ver de un vistazo cómo estás y qué hacer. Módulos: M2, M7.
 **Caso de uso:** `getDashboard()`.
 
@@ -171,7 +171,7 @@ flowchart LR
 
 ---
 
-### 4.2 Cierre de mes (paso 1) — `app/cierre/index.tsx`
+### 4.2 Cierre de mes (paso 1) — `src/app/cierre/index.tsx`
 **Propósito:** actualizar los saldos en ≤ 2 min. Módulo: M5.
 **Caso de uso:** al abrir, `getMonthCloseDraft()` (saldos anteriores + TRM del día); al guardar, `completeMonthClose(input)`.
 
@@ -216,7 +216,7 @@ flowchart LR
 
 ---
 
-### 4.3 Resumen del cierre (paso 2) — `app/cierre/resumen.tsx`
+### 4.3 Resumen del cierre (paso 2) — `src/app/cierre/resumen.tsx`
 **Propósito:** mostrar cuánto gastaste sin haber registrado gastos. Módulos: M5, M7.
 **Caso de uso:** resultado de `completeMonthClose`.
 
@@ -258,7 +258,7 @@ flowchart LR
 
 ---
 
-### 4.4 ¿Lo compro? — `app/lo-compro.tsx`
+### 4.4 ¿Lo compro? — `src/app/lo-compro.tsx`
 **Propósito:** decidir una compra con tu contexto real. Módulo: M8.
 **Caso de uso:** `evaluatePurchase(input)`. Se recalcula **en vivo** cada vez que cambia un campo (es una función pura y es rápida).
 
@@ -314,7 +314,7 @@ flowchart LR
 
 ---
 
-### 4.5 Metas — `app/(tabs)/metas.tsx`
+### 4.5 Metas — `src/app/(tabs)/metas.tsx`
 **Propósito:** ver el avance de cada meta en orden de prioridad. Módulo: M6.
 **Caso de uso:** `getGoals()`.
 
@@ -349,7 +349,7 @@ flowchart LR
 
 ---
 
-### 4.6 Hogar — `app/(tabs)/hogar.tsx`
+### 4.6 Hogar — `src/app/(tabs)/hogar.tsx`
 **Propósito:** el reparto proporcional y quién le debe a quién. Módulo: M4.
 **Caso de uso:** `getHouseholdSplit(month)`.
 
@@ -392,7 +392,7 @@ flowchart LR
 
 ---
 
-### 4.7 Ajustes — `app/(tabs)/ajustes.tsx`
+### 4.7 Ajustes — `src/app/(tabs)/ajustes.tsx`
 **Propósito:** todos los parámetros configurables (sección 5.0 del diseño funcional).
 **Caso de uso:** `getSettings()` / `updateSetting(key, value)` (se guarda al instante).
 
@@ -431,7 +431,7 @@ flowchart LR
 | | Cuentas que cuentan | `ListRow` → lista con interruptores | `account.counts_as_liquidity` |
 | Cierre de mes | Día del mes | `ListRow` → selector 1–28 | `monthCloseDay` |
 | | Recordar de nuevo | `ListRow` → selector 1–7 días | `monthCloseRetryDays` |
-| Tarjetas y créditos | una fila por tarjeta o crédito | `ListRow` → formulario de tasa (valor + EM/EA) | `debt.rate_value`, `debt.rate_unit` |
+| Tarjetas y créditos | una fila por tarjeta o crédito | `ListRow` → formulario de tasa (valor + EM/EA) | `debt.rate_bps`, `debt.rate_unit` |
 | Hogar | Reparto de gastos | `ListRow` → Automático / Manual (%) | `splitMode`, `splitManual` |
 | Consejos | Máximo visibles | selector 1–5 | `maxVisibleAdvice` |
 | | Volver a mostrar descartados | selector 7–180 días | `adviceCooldownDays` |
@@ -440,7 +440,7 @@ flowchart LR
 
 ---
 
-### 4.8 Onboarding — `app/onboarding/*` (pendiente de diseñar)
+### 4.8 Onboarding — `src/app/onboarding/*` (pendiente de diseñar)
 Definido en M1. Pasos: miembros e ingresos → cuentas con saldo inicial → deudas → obligaciones, gastos prorrateados y provisiones → metas → parámetros. Solo los dos primeros son obligatorios. Reutiliza `MoneyInput`, `SegmentedControl` y `ListRow`.
 
 ---
